@@ -8,7 +8,7 @@ package building;
  *
  * @author Acer
  */
-public @interface IBuilding {
+public interface Building {
 
     /**
      *returns the type of building

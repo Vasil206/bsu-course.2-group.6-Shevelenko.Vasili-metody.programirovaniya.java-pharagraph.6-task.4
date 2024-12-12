@@ -1,31 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package building.PublicBuilding;
 
-import building.IBuilding;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
+import building.Building;
 
 /**
- * class represents a public building
+ * class that representing a public building
  * 
  * @author Acer
  */
-public abstract class PublicBuilding implements IBuilding {
+public abstract class PublicBuilding implements Building {
     
-    private boolean _isBuilt;
-    private LocalTime[] _timeOfOpening;         //opening on each day of a week
-    private LocalTime[] _timeOfClosing;         //closing on each day of a week
+    private boolean isBuilt;
+    private final LocalTime[] timeOfOpening;         //opening on each day of a week
+    private final LocalTime[] timeOfClosing;         //closing on each day of a week
     
     public PublicBuilding(){
         
-        _isBuilt = false;
-        _timeOfOpening = new LocalTime[7];
-        _timeOfClosing = new LocalTime[7];
+        isBuilt = false;
+        timeOfOpening = new LocalTime[7];
+        timeOfClosing = new LocalTime[7];
     }
     
     @Override
@@ -37,15 +35,20 @@ public abstract class PublicBuilding implements IBuilding {
     @Override
     public boolean isBuilt(){
         
-        return _isBuilt;
+        return isBuilt;
     }
     
     @Override
     public boolean build(){
        
-        _isBuilt = true;
+        isBuilt = true;
         
         return true;
+    }
+    
+    public void brek(){
+       
+        isBuilt = false;
     }
     
     /**
@@ -55,10 +58,18 @@ public abstract class PublicBuilding implements IBuilding {
      */
     public boolean isOpened(){
         
-        var dayOfWeek = LocalDate.now().getDayOfWeek().getValue();
+        var dayOfWeek = LocalDate.now().getDayOfWeek().getValue() - 1;
         
-        return (LocalTime.now().isAfter(_timeOfOpening[dayOfWeek - 1])
-                && LocalTime.now().isBefore(_timeOfClosing[dayOfWeek - 1]));
+        return (LocalTime.now().compareTo(timeOfOpening[dayOfWeek]) >= 0
+                && LocalTime.now().compareTo(timeOfClosing[dayOfWeek]) < 0);
+    }
+    
+    public boolean isOpenedAt(DayOfWeek dayOfWeek, LocalTime time){
+        
+        var dayOfWeekIndex = dayOfWeek.getValue() - 1;
+        
+        return (time.compareTo(timeOfOpening[dayOfWeekIndex]) >= 0
+                && time.compareTo(timeOfClosing[dayOfWeekIndex]) < 0);
     }
     
     /**
@@ -68,13 +79,13 @@ public abstract class PublicBuilding implements IBuilding {
      * 
      * @return
      */
-    public ArrayList<LocalTime[]> getWorkSchedule(){
+    public List<LocalTime[]> getWorkSchedule(){
         
         var workSchedule = new ArrayList<LocalTime[]>()
         {
             {
-                           add(_timeOfOpening);
-                           add(_timeOfClosing);
+                           add(timeOfOpening);
+                           add(timeOfClosing);
             }   
         };
         
@@ -89,7 +100,7 @@ public abstract class PublicBuilding implements IBuilding {
     public void setTimeOfOpening(DayOfWeek dayOfWeek,
             LocalTime newTimeOfOpening){
         
-        _timeOfOpening[dayOfWeek.getValue() - 1] = newTimeOfOpening;
+        timeOfOpening[dayOfWeek.getValue() - 1] = newTimeOfOpening;
     }
     
     /**
@@ -101,6 +112,6 @@ public abstract class PublicBuilding implements IBuilding {
     public void setTimeOfClosing(DayOfWeek dayOfWeek,
             LocalTime newTimeOfClosing){
         
-        _timeOfClosing[dayOfWeek.getValue() - 1] = newTimeOfClosing;
+        timeOfClosing[dayOfWeek.getValue() - 1] = newTimeOfClosing;
     }
 }
